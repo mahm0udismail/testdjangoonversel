@@ -103,7 +103,9 @@ DATABASE_URL = "postgresql://nonodb_user:m7TNUSODoFw4f1tYPH5riDM3P2DbLFWC@dpg-cv
 DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 }
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': "dmfift33y",
@@ -113,6 +115,11 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+cloudinary.config( 
+  cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'], 
+  api_key=CLOUDINARY_STORAGE['API_KEY'], 
+  api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
