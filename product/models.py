@@ -1,8 +1,11 @@
 from io import BytesIO
 from PIL import Image
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-from django.core.files import File
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -23,8 +26,8 @@ class Product(models.Model):
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    image = CloudinaryField('image', blank=True, null=True)  # ✅ Cloudinary storage
+    thumbnail = CloudinaryField('thumbnail', blank=True, null=True)  # ✅ Cloudinary storage
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -37,30 +40,36 @@ class Product(models.Model):
         return f'/{self.category.slug}/{self.slug}/'
     
     def get_image(self):
+        """Returns Cloudinary URL of the main image."""
         if self.image:
-            return 'https://testdjangoonversel.onrender.com' + self.image.url
+            return self.image.url
         return ''
     
     def get_thumbnail(self):
+        """Returns Cloudinary URL of the thumbnail or generates it if missing."""
         if self.thumbnail:
-            return 'https://testdjangoonversel.onrender.com' + self.thumbnail.url
-        else:
-            if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
-                self.save()
-
-                return 'https://testdjangoonversel.onrender.com' + self.thumbnail.url
-            else:
-                return ''
+            return self.thumbnail.url
+        elif self.image:
+            self.thumbnail = self.make_thumbnail(self.image)
+            self.save()
+            return self.thumbnail.url
+        return ''
     
     def make_thumbnail(self, image, size=(300, 200)):
+        """Creates a thumbnail, uploads to Cloudinary, and returns the URL."""
         img = Image.open(image)
-        img.convert('RGB')
+        img = img.convert('RGB')
         img.thumbnail(size)
 
         thumb_io = BytesIO()
-        img.save(thumb_io, 'JPEG', quality=85)
+        img.save(thumb_io, format='JPEG', quality=85)
 
-        thumbnail = File(thumb_io, name=image.name)
+        # ✅ Upload thumbnail to Cloudinary
+        response = cloudinary.uploader.upload(
+            thumb_io.getvalue(),
+            folder="thumbnails",
+            format="jpg",
+            quality="auto:low",
+        )
 
-        return thumbnail
+        return response['secure_url']  # ✅ Return Cloudinary URL

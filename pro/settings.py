@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'cloudinary_storage',
+    'cloudinary',
+
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
@@ -100,6 +103,16 @@ DATABASE_URL = "postgresql://nonodb_user:m7TNUSODoFw4f1tYPH5riDM3P2DbLFWC@dpg-cv
 DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 }
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': "dmfift33y",
+    'API_KEY': "232556571927156",
+    'API_SECRET': "REahkW1gtbhdhH81DFu1rlAZBIA",
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
