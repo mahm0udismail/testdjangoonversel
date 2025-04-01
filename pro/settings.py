@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    "https://test-vue-js-vercel.vercel.app",
 ]
 
 MIDDLEWARE = [
