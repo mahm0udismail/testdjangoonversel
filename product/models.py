@@ -46,13 +46,9 @@ class Product(models.Model):
         return ''
     
     def get_thumbnail(self):
-        """Returns Cloudinary URL of the thumbnail or generates it if missing."""
-        if self.thumbnail:
-            return self.thumbnail.url
-        elif self.image:
-            self.thumbnail = self.make_thumbnail(self.image)
-            self.save()
-            return self.thumbnail.url
+        if self.image:
+            # Use Cloudinary to generate a thumbnail dynamically
+            return cloudinary.utils.cloudinary_url(self.image.public_id, width=300, height=200, crop="fill")[0]
         return ''
     
     def make_thumbnail(self, image, size=(300, 200)):
