@@ -95,11 +95,10 @@ WSGI_APPLICATION = 'pro.wsgi.application'
 
 import dj_database_url
 
+DATABASE_URL = "postgresql://nonodb_user:m7TNUSODoFw4f1tYPH5riDM3P2DbLFWC@dpg-cvlu9i15pdvs739cqin0-a.oregon-postgres.render.com/nonodb"
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        engine='django.db.backends.postgresql'  # Ensure ENGINE is set
-    )
+    'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 }
 
 # Password validation
