@@ -31,3 +31,4 @@ h11==0.14.0
 packaging==24.2
 uvicorn==0.34.0
 whitenoise==6.8.2
+dj-database-url==1.2.0
